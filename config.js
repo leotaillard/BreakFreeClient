@@ -2,12 +2,14 @@ var nbrFacile = 0;
 var nbrMoyen = 0;
 var nbrDiff = 0;
 var config = {
-	"serverUrl": "http://10.192.58.61:8080/BreakFreeEngineV2/webresources/",
+	"day_css": "css/main.css",
+	"night_css": "css/night.css",
+	"serverUrl": "http://10.192.81.197:8080/BreakFreeEngineV2/webresources/",
 	
 	"ordre" : {
-		"1": ["f","m","d"],
-		"2": ["f","m","d"],
-		"3": ["f","m","d"]
+		"1": ["f","d", "f","d"],
+		"2": ["f"],
+		"3": ["m"]
 	}
 	}
 	

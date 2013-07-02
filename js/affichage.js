@@ -7,6 +7,9 @@ var mySwiper;
 var partieId;
 
 $(document).ready(function() {
+
+
+
 //slide de tie
 var tie = nbrFacile + nbrMoyen + nbrDiff + 9;
 
@@ -14,10 +17,17 @@ $(function(){
 	mySwiper = $('.swiper-container').swiper({
 		//Your options here:
 		mode:'horizontal',
-		simulateTouch:false
+		simulateTouch:false,
+		onSlideChangeStart : function (e) {
+			var index = mySwiper.activeIndex;
+			$("input").hide();
+			$(".swiper-slide:nth-child("+(index+1)+") input").show();
+		}
+		
 		//etc..
 	});
-
+	$('input').hide();
+	
 $(document).keydown(function(e){
     if (e.keyCode == 37) {
    		var index = mySwiper.activeIndex;
@@ -32,6 +42,9 @@ $(document).keydown(function(e){
 
 		e.preventDefault();
 		mySwiper.swipeNext();
+		
+		
+		
 		getPlayer(partieId);
 		if (index == 2) {
 			sendName();
@@ -255,7 +268,7 @@ $(".logo a.letsgo").click(function() {
 			slideWinner = mySwiper.createSlide("<section class='question'><h2>Le grand gagnant</h2></section><section class='winner'><div class='img-winner'></div><ul class='infos-winner'></ul></section>");
 			slideWinner.append();
 			
-			slideEnd = mySwiper.createSlide("<section class='end'><a href='#' class='letsgo' id='endPartie'>Fin de la partie</a></section>");
+			slideEnd = mySwiper.createSlide("<section class='end'><a tabindex='-1' href='#' class='letsgo' id='endPartie'>Fin de la partie</a></section>");
 			slideEnd.append();
 			
 		},
@@ -333,7 +346,7 @@ function getWinner(partieId) {
 				
 				$(data).each(function(i, e) {
 				
-				$(".infos-winner").append("<li><input type='hidden' class='playerId-winner' value='"+e.id+"' /><h2 id='name-winner'>"+e.name+"</h2><h3 id='points-winner'>"+e.nbrPoints+" Points</h3><label for='email-winner'>Email</label><input type='text' id='email-winner-"+e.id+"' name='email-winner' /></li>");
+				$(".infos-winner").append("<li><input type='hidden' class='playerId-winner' value='"+e.id+"' /><h2 id='name-winner'>"+e.name+"</h2><h3 id='points-winner'>"+e.nbrPoints+" Points</h3><label for='email-winner'>Email</label><input type='text' tabindex='-1' id='email-winner-"+e.id+"' name='email-winner' /></li>");
 				$(".infos-winner li").css('width', 100/data.length+'%');
 				});
 			}
@@ -455,7 +468,7 @@ function getQuestionRandom(partieId) {
 			'Accept':'application/json'
 			},
 		success:function(data) {
-			$("#title-question-tie").animate({height:450}, 3000).html(data.title);
+			$("#title-question-tie").clearQueue().height(0).animate({height:450}, 3000).html(data.title);
 			console.log(data);
 			$(data.reponses).each(function(i, e) {
 				if(e.isCorrect)
