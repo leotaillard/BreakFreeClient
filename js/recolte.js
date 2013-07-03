@@ -197,7 +197,7 @@ function getSlideForPartie(numPartie) {
 				$(".swiper-wrapper").append("<div class='swiper-slide' id='question-"+(i+1)+"'><div class='question-reponse'><h2 class='titre-question'>"+e.title+"</h2><h2 class='titre-reponse'></h2><div class='clear'></div></div><ul class='reponses'><div class='clear'></div></ul></div>");
 				
 				});
-				$("#question-"+(questionsInOrder.length)).after("<div class='swiper-slide' id='question-13'><section class='recolte-end'><a href='#' class='letsgo' id='showEgalite'>Egalite ?</a></section><section id='egalite'><div class='question-reponse'><h2>Egalité</h2><div class='clear'></div></div><ul class='reponses'><div class='clear'></div></ul></section></div><div class='swiper-slide'><section class='recolte-end'><a href='#' class='letsgo' id='endPartie'>Fin de la partie</a></section></div>");
+				$("#question-"+(questionsInOrder.length)).after("<div class='swiper-slide' id='question-"+(questionsInOrder.length+1)+"'><section class='recolte-end'><a href='#' class='letsgo' id='showEgalite'>Egalite ?</a></section><section id='egalite'><div class='question-reponse'><h2>Egalité</h2><div class='clear'></div></div><ul class='reponses'><div class='clear'></div></ul></section></div><div class='swiper-slide'><section class='recolte-end'><a href='#' class='letsgo' id='endPartie'>Fin de la partie</a></section></div>");
 				
 				$(data.players).each(function(j,pla) {
 					//affichage de la récolte des questions
@@ -217,7 +217,7 @@ function getSlideForPartie(numPartie) {
 							}
 						});
 				});//fin du each
-				$("#question-13 .juste").each(function() {
+				$("#question-"+(questionsInOrder.length+1)+" .juste").each(function() {
 					$(this).attr('data-points', 1);
 				});
 				//$("#partie-cours").css('display','block');
