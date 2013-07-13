@@ -1,15 +1,23 @@
 var nbrFacile = 0;
 var nbrMoyen = 0;
 var nbrDiff = 0;
+
 var config = {
 	"day_css": "css/main.css",
 	"night_css": "css/night.css",
-	"serverUrl": "http://10.192.81.197:8080/BreakFreeEngineV2/webresources/",
+	"serverUrl": "http://169.254.204.212:8080/BreakFreeEngineV2/webresources/",
 	
+	//ordre et nombres des questions
+	// f = question facile
+	// m = question moyenne
+	// d = question dur
 	"ordre" : {
-		"1": ["f","d", "f","d"],
-		"2": ["f"],
-		"3": ["m"]
+		//première partie
+		"1": ["f"],
+		//deuxième partie
+		"2": ["m"],
+		//troisième partie
+		"3": ["d"]
 	}
 	}
 	

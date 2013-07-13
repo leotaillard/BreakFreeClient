@@ -10,8 +10,8 @@ $(document).ready(function() {
 
 
 
-//slide de tie
-var tie = nbrFacile + nbrMoyen + nbrDiff + 9;
+//slide de tie - le nombre ajouté en plus est le nombre de slide en plus des questions
+var tie = nbrFacile + nbrMoyen + nbrDiff + 8;
 
 $(function(){
 	mySwiper = $('.swiper-container').swiper({
@@ -20,8 +20,8 @@ $(function(){
 		simulateTouch:false,
 		onSlideChangeStart : function (e) {
 			var index = mySwiper.activeIndex;
-			$("input").hide();
-			$(".swiper-slide:nth-child("+(index+1)+") input").show();
+//			$("input").hide();
+//			$(".swiper-slide:nth-child("+(index+1)+") input").show();
 		}
 		
 		//etc..
@@ -31,6 +31,8 @@ $(function(){
 $(document).keydown(function(e){
     if (e.keyCode == 37) {
    		var index = mySwiper.activeIndex;
+		// permet de defocus les inputs quand on change de slide
+		$("input").blur();
 
 		e.preventDefault()
 		mySwiper.swipePrev()
@@ -39,11 +41,15 @@ $(document).keydown(function(e){
     if (e.keyCode == 39) {
    		var index = mySwiper.activeIndex;
   		var partieId = $("#partie").attr('data-id');
-
+  		// permet de defocus les inputs quand on change de slide
+		$("input").blur();
+		
 		e.preventDefault();
 		mySwiper.swipeNext();
-		
-		
+		//LANCE LA VIDEO S'IL Y EN A UNE
+		if ($(".swiper-slide:nth-child("+(index+2)+") .video-container video").length) {
+			$(".swiper-slide:nth-child("+(index+2)+") .video-container video").get(0).play();
+		}
 		
 		getPlayer(partieId);
 		if (index == 2) {
@@ -55,8 +61,10 @@ $(document).keydown(function(e){
 		return false;
     }
     // permet d'ajouter une class a la réponse juste en pressant la barre d'espace et ainsi de montrer la bonne réponse
-    if (e.keyCode == 32) {
+    if (e.which == 83 && $("input:focus").length == 0) {
+        e.stopPropagation(); e.preventDefault();
 		var index = mySwiper.activeIndex;
+		
     	$(".swiper-slide:nth-child("+(index+1)+") ul").find("li[data-justesse=true]").toggleClass('view-juste');
     	$(".swiper-slide:nth-child("+(index+1)+")").find("#title-reponse-tie").toggle();
     	$(".swiper-slide:nth-child("+(index+1)+")").find("#title-question-tie").toggle();
@@ -64,21 +72,25 @@ $(document).keydown(function(e){
        return false;
     }
     // permet de seter le timer
-    if (e.keyCode == 13) {
-    		var index = mySwiper.activeIndex;
+	var index = mySwiper.activeIndex;
+
+    if (e.which ==  65 && $("input:focus").length == 0) {
+
+        e.stopPropagation(); e.preventDefault();
+		var index = mySwiper.activeIndex;
     	$(".swiper-slide:nth-child("+(index+1)+")").find(".timer").animate({
     		width: '100%'
     	}, 10000);
     		
        return false;
     }
-    if (e.keyCode == 38) {
+    if (e.which == 68 && $("input:focus").length == 0) {
+        e.stopPropagation(); e.preventDefault();
 		var partieId = $("#partie").attr('data-id');
 		var index = mySwiper.activeIndex;
     	if (index == tie) {
     		getQuestionRandom(partieId);
     	}
-    	e.preventDefault()
        return false;
     }
     
@@ -188,28 +200,7 @@ $(".logo a.letsgo").click(function() {
 			//création des questions
 			$(partie1).each(function(i,e) {
 				if (i == 0) {
-					var slideIntro = mySwiper.createSlide("<section class='intro' id='intro-1'><h2>intro 1ère partie</h2></section>");
-					slideIntro.append();
-				}
-				var slideQuestions = mySwiper.createSlide("<div id='question-"+cpt+"'><section class='question'><h2>"+e.title+"</2></section><section class='reponse'><ul class='quatre'></ul><div class='clear'></div></section><section class='timer'></section></div>");
-				
-				slideQuestions.append();
-				//on mélange les réponses
-				shuffle(e.reponses);
-				
-				$(e.reponses).each(function(i,rep) {
-						$("#question-"+cpt).find("ul.quatre").append("<li data-justesse='"+rep.isCorrect+"'>"+rep.title+"</li>");
-				});
-				cpt++;
-				if (i == partie1.length-1) {
-					var slideRank = mySwiper.createSlide("<section class='question'><h2>Classement intermédiaire</h2></section><section class='ranking'><ul></ul><div class='clear'></div></section>");
-					slideRank.append();
-				}
-			});
-			//création des questions
-			$(partie2).each(function(i,e) {
-				if (i == 0) {
-					var slideIntro = mySwiper.createSlide("<section class='intro' id='intro-2'><h2>intro 2ème partie</h2></section>");
+					var slideIntro = mySwiper.createSlide("<section class='video-container'><video><source src='media/AnimationPartie1.mp4' type='video/mp4' /></video></section>");
 					slideIntro.append();
 				}
 				var slideQuestions = mySwiper.createSlide("<div id='question-"+cpt+"'><section class='question'><h2>"+e.title+"</2></section><section class='reponse'><ul class='deux'></ul><div class='clear'></div></section><section class='timer'></section></div>");
@@ -243,11 +234,33 @@ $(".logo a.letsgo").click(function() {
 					slideRank.append();
 					
 				}
+
+			});
+			//création des questions
+			$(partie2).each(function(i,e) {
+				if (i == 0) {
+					var slideIntro = mySwiper.createSlide("<section class='video-container'><video><source src='media/AnimationPartie2.mp4' type='video/mp4' /></video></section>");
+					slideIntro.append();
+				}
+				var slideQuestions = mySwiper.createSlide("<div id='question-"+cpt+"'><section class='question'><h2>"+e.title+"</2></section><section class='reponse'><ul class='quatre'></ul><div class='clear'></div></section><section class='timer'></section></div>");
+				
+				slideQuestions.append();
+				//on mélange les réponses
+				shuffle(e.reponses);
+				
+				$(e.reponses).each(function(i,rep) {
+						$("#question-"+cpt).find("ul.quatre").append("<li data-justesse='"+rep.isCorrect+"'>"+rep.title+"</li>");
+				});
+				cpt++;
+				if (i == partie1.length-1) {
+					var slideRank = mySwiper.createSlide("<section class='question'><h2>Classement intermédiaire</h2></section><section class='ranking'><ul></ul><div class='clear'></div></section>");
+					slideRank.append();
+				}
 			});
 			//création des questions
 			$(partie3).each(function(i,e) {
 				if (i == 0) {
-					var slideIntro = mySwiper.createSlide("<section class='intro' id='intro-3'><h2>intro 3ème partie</h2></section>");
+					var slideIntro = mySwiper.createSlide("<section class='video-container'><video><source src='media/AnimationPartie3.mp4' type='video/mp4' /></video></section>");
 					slideIntro.append();
 				}
 				var slideQuestions = mySwiper.createSlide("<div id='question-"+cpt+"'><section class='question'><h2>"+e.title+"</2></section><section class='buzzer'></section></div>");
@@ -262,13 +275,13 @@ $(".logo a.letsgo").click(function() {
 			});
 			
 			//création des dernières slides
-			var slideTie = mySwiper.createSlide("<div id='question-tie'><section class='question' id='tie'><h2>Question de départage</h2></section><section class='question-tie'><h2 id='title-question-tie'></h2><h2 id='title-reponse-tie'></h2></section></div>");
+			var slideTie = mySwiper.createSlide("<div id='question-tie'><section class='question' id='tie'><h2>Mort subite</h2></section><section class='question-tie'><h2 id='title-question-tie'></h2><h2 id='title-reponse-tie'></h2></section></div>");
 			slideTie.append();
 			
 			slideWinner = mySwiper.createSlide("<section class='question'><h2>Le grand gagnant</h2></section><section class='winner'><div class='img-winner'></div><ul class='infos-winner'></ul></section>");
 			slideWinner.append();
 			
-			slideEnd = mySwiper.createSlide("<section class='end'><a tabindex='-1' href='#' class='letsgo' id='endPartie'>Fin de la partie</a></section>");
+			slideEnd = mySwiper.createSlide("<section class='end'><a href='#' class='letsgo' id='endPartie'>Fin de la partie</a></section>");
 			slideEnd.append();
 			
 		},
@@ -351,7 +364,7 @@ function getWinner(partieId) {
 				});
 			}
 			else {
-				$("#question-tie").parent().css('display', 'none');
+//				$("#question-tie").parent().css('display', 'none');
 				$(data).each(function(i, e) {
 					$(".infos-winner").append("<li><input type='hidden' class='playerId-winner' value='"+e.id+"' /><h2 id='name-winner'>"+e.name+"</h2><h3 id='points-winner'>"+e.nbrPoints+" Points</h3><label for='email-winner'>Email</label><input type='text' id='email-winner' name='email-winner' /></li>");
 				});
@@ -392,7 +405,9 @@ function sendName() {
 		});
 	}); 
 }
-
+/**
+fonction qui permet d'envoyer l'adresse email du vaincqueur
+*/
 function sendEmailFromWinner() {
 
 	var req = config.serverUrl + "player/";
@@ -476,7 +491,7 @@ function getQuestionRandom(partieId) {
 			});
 			},
 		error: function() {
-			$("#title-question-tie").animate({height:450}, 3000).html("il n'y a plus de questions ;)");
+			$("#title-question-tie").animate({height:450}, 2000).html("il n'y a plus de questions ;)");
 			$("#title-reponse-tie").html("et pas de réponses non plus ;)");
 			}		
 	});

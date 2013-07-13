@@ -12,18 +12,20 @@ Author: Léo Taillard
 }
 body{
 	font-size: 1em;
-	
 }
 .container {
 	margin: 0 auto;
 	width: 960px;
 }
-
 .clear{
 	clear: both;	
 }
 img,video{
 	max-width: 100%;
+}
+.video-container{
+	width: 100%;
+	height: 100%;
 }
 /* RECOLTE DES INFOS
 ================================================== */
@@ -235,13 +237,13 @@ a.letsgo:focus{
 	min-height: 200px;
 }
 .but ul{
-	width: 100%;
+	width: 960px;
 	list-style: inside;
+	margin: 0 auto;
 }
 .but ul li{
 	width: 100%;
 	min-height: 100px;
-	text-align: center;
 	line-height: 100px;
 	/*STYLE*/
 	font-size: 2.5em;
@@ -269,6 +271,11 @@ a.letsgo:focus{
 }
 .players ul li input{
 	width: 100%;
+	border: none;
+	height: 30px;
+	padding-left: 10px;
+	text-align: center;
+	background: rgba(255,255,255,0.8);
 }
 .quatre, .deux{
 	width: 100%;
@@ -356,6 +363,7 @@ a.letsgo:focus{
  span.name-player{
 	margin-top: 10px;
  	font-size: 3.5em;
+ 	word-break:break-word;
  }
  .buzzer{
  	width: 100%;
@@ -401,8 +409,13 @@ a.letsgo:focus{
   .infos-winner input{
   	height: 45px;
   	width: 100%;
-  	text-align: center;
   	font-size: 2em;
+  	border: none;
+  	height: 30px;
+  	padding-left: 10px;
+  	text-align: center;
+  	background: rgba(255,255,255,0.8);
+  	
   }
  #question-tie{
 /* 	display: none;*/
