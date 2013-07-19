@@ -5,7 +5,7 @@ var nbrDiff = 0;
 var config = {
 	"day_css": "css/main.css",
 	"night_css": "css/night.css",
-	"serverUrl": "http://169.254.204.212:8080/BreakFreeEngineV2/webresources/",
+	"serverUrl": "http://192.168.192.4:8080/BreakFreeEngineV2/webresources/",
 	
 	//ordre et nombres des questions
 	// f = question facile
@@ -13,11 +13,11 @@ var config = {
 	// d = question dur
 	"ordre" : {
 		//première partie
-		"1": ["f"],
+		"1": ["f","d","d"],
 		//deuxième partie
-		"2": ["m"],
+		"2": ["f","d","d"],
 		//troisième partie
-		"3": ["d"]
+		"3": ["f","d","d"]
 	}
 	}
 	

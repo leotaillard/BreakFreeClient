@@ -5,13 +5,11 @@ Usage: Paléo festival stand COMEM
 */
 var mySwiper;
 var partieId;
-
+var tie = nbrFacile + nbrMoyen + nbrDiff + 8;
+var alpha = ["A","B","C","D"];
 $(document).ready(function() {
 
-
-
 //slide de tie - le nombre ajouté en plus est le nombre de slide en plus des questions
-var tie = nbrFacile + nbrMoyen + nbrDiff + 8;
 
 $(function(){
 	mySwiper = $('.swiper-container').swiper({
@@ -34,6 +32,7 @@ $(document).keydown(function(e){
 		// permet de defocus les inputs quand on change de slide
 		$("input").blur();
 
+		
 		e.preventDefault()
 		mySwiper.swipePrev()
        return false;
@@ -43,6 +42,24 @@ $(document).keydown(function(e){
   		var partieId = $("#partie").attr('data-id');
   		// permet de defocus les inputs quand on change de slide
 		$("input").blur();
+		// regle le probleme de tabindex		
+		$("input[type=text]").each(function(index,elem) {
+			$(this).attr("tabindex", -1);
+		});			
+		// regle le probleme de tabindex		
+		$(".swiper-slide:nth-child("+(index+2)+") input[type=text]").each(function(j,elem) {
+				$(this).attr("tabindex", (j+1));
+		});		
+		
+		// regle le probleme de tabindex		
+		$(".swiper-slide a").each(function(i,elem) {
+			var number = $(".swiper-slide").length;
+			if (index == (number-4) || index == (number-3)) {
+				$(this).attr("tabindex", i);
+			}else {
+				$(this).attr("tabindex", -1);
+			}
+		});				
 		
 		e.preventDefault();
 		mySwiper.swipeNext();
@@ -52,7 +69,7 @@ $(document).keydown(function(e){
 		}
 		
 		getPlayer(partieId);
-		if (index == 2) {
+		if (index == 1) {
 			sendName();
 		}
 		else if (index == tie || index == (tie+1)) {
@@ -104,7 +121,7 @@ $(document).on( 'click', '#endPartie', function () {
 
 
 $(".logo a.letsgo").click(function() {
-	
+	$("input").blur();
 	var nbrPlayer = $(this).attr('data-nbrPlayer');
 	var req = config.serverUrl + "partie?nbrPlayer="+nbrPlayer+"&nbrFacile="+nbrFacile+"&nbrMoyen="+nbrMoyen+"&nbrDiff="+nbrDiff;
 	$.ajax({
@@ -192,7 +209,7 @@ $(".logo a.letsgo").click(function() {
 			slidePlayer.insertAfter(1);
 			//introduit l'id des joueurs dans le html et construit le html pour les noms des joueurs
 			$(data.players).each(function(index, e) {
-				$(".players ul").append("<li><img src='css/img/player.png'/><input value='joueur "+(index+1)+"' type='text' data-playerId='"+e.id+"' id='player-"+(index+1)+"' name='player-"+(index+1)+"' placeholder='Nom du joueur "+(index+1)+"' /></li>");
+				$(".players ul").append("<li><img src='css/img/player.png'/><input value='joueur "+(index+1)+"' type='text' data-playerId='"+e.id+"' id='player-"+(index+1)+"' name='player-"+(index+1)+"'  placeholder='Nom du joueur "+(index+1)+"' /></li>");
 			});
 			$('.players ul li').css('width', 100/data.players.length+"%");
 			
@@ -224,7 +241,7 @@ $(".logo a.letsgo").click(function() {
 					}
 					//parcours le tableau array
 					$(array).each(function(j, ar) {
-							$("#question-"+cpt).find("ul.deux").prepend("<li data-justesse='"+ar.isCorrect+"'>"+ar.title+"</li>");
+							$("#question-"+cpt).find("ul.deux").append("<li data-justesse='"+ar.isCorrect+"'>"+alpha[j]+". "+ar.title+"</li>");
 					});
 				});
 				
@@ -249,7 +266,7 @@ $(".logo a.letsgo").click(function() {
 				shuffle(e.reponses);
 				
 				$(e.reponses).each(function(i,rep) {
-						$("#question-"+cpt).find("ul.quatre").append("<li data-justesse='"+rep.isCorrect+"'>"+rep.title+"</li>");
+						$("#question-"+cpt).find("ul.quatre").append("<li data-justesse='"+rep.isCorrect+"'>"+alpha[i]+". "+rep.title+"</li>");
 				});
 				cpt++;
 				if (i == partie1.length-1) {
@@ -281,12 +298,12 @@ $(".logo a.letsgo").click(function() {
 			slideWinner = mySwiper.createSlide("<section class='question'><h2>Le grand gagnant</h2></section><section class='winner'><div class='img-winner'></div><ul class='infos-winner'></ul></section>");
 			slideWinner.append();
 			
-			slideEnd = mySwiper.createSlide("<section class='end'><a href='#' class='letsgo' id='endPartie'>Fin de la partie</a></section>");
+			slideEnd = mySwiper.createSlide("<section class='end'><a href='#' class='letsgo' id='endPartie' tabindex='-1' >Fin de la partie</a></section>");
 			slideEnd.append();
 			
 		},
 		error:function() {
-			alert("nope");
+			alert("AH AH, problème, call 078 851 17 15 ;)");
 		}
 		
 	});
@@ -359,16 +376,24 @@ function getWinner(partieId) {
 				
 				$(data).each(function(i, e) {
 				
-				$(".infos-winner").append("<li><input type='hidden' class='playerId-winner' value='"+e.id+"' /><h2 id='name-winner'>"+e.name+"</h2><h3 id='points-winner'>"+e.nbrPoints+" Points</h3><label for='email-winner'>Email</label><input type='text' tabindex='-1' id='email-winner-"+e.id+"' name='email-winner' /></li>");
+				$(".infos-winner").append("<li><input type='hidden' class='playerId-winner' value='"+e.id+"' /><h2 id='name-winner'>"+e.name+"</h2><h3 id='points-winner'>"+e.nbrPoints+" Points</h3><label for='email-winner'>Email</label><input type='text' id='email-winner-"+e.id+"' tabindex='-1' name='email-winner'/></li>");
 				$(".infos-winner li").css('width', 100/data.length+'%');
+				//active le tabindex seulement au moment opportun ;)
+				var index = mySwiper.activeIndex;
+				if (index == (tie+1)) {
+					$(".infos-winner input[type=text]").attr("tabindex", (i+1));
+				}
+				
 				});
 			}
 			else {
-//				$("#question-tie").parent().css('display', 'none');
+				$("#question-tie").parent().css('display', 'none');
 				$(data).each(function(i, e) {
-					$(".infos-winner").append("<li><input type='hidden' class='playerId-winner' value='"+e.id+"' /><h2 id='name-winner'>"+e.name+"</h2><h3 id='points-winner'>"+e.nbrPoints+" Points</h3><label for='email-winner'>Email</label><input type='text' id='email-winner' name='email-winner' /></li>");
+					$(".infos-winner").append("<li><input type='hidden' class='playerId-winner' value='"+e.id+"' /><h2 id='name-winner'>"+e.name+"</h2><h3 id='points-winner'>"+e.nbrPoints+" Points</h3><label for='email-winner'>Email</label><input type='text' tabindex='0' id='email-winner' name='email-winner' /></li>");
 				});
 			}
+			
+			
 		}
 	});
 }
@@ -382,7 +407,7 @@ function sendName() {
 		
 		var playerId = $(this).find('input#player-'+(i+1)).attr('data-playerID');
 		var playerName = $(this).find('input#player-'+(i+1)).val();
-		
+
 		var myPlayerToSend = new Object();
 		myPlayerToSend.id = playerId;
 		myPlayerToSend.name = playerName;

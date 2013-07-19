@@ -279,7 +279,8 @@ a.letsgo:focus{
 }
 .quatre, .deux{
 	width: 100%;
-	list-style: none;
+	list-style-position: inside;
+	list-style-type: none;
 	/*STYLE*/
 	font-size: 4em;
 	color: white;
